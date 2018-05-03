@@ -1,0 +1,25 @@
+\chapter{Squiggles Alignment}
+
+\label{kap:squiggles} % id kapitoly pre prikaz ref
+
+In this chapter we introduce raw MinION data and a way to align them.
+
+\section{Squiggles}
+
+MinION device produces a sequence of measured values of current passing a nanopore. We call this sequence a squiggle.
+Typically we have multiple squiggles covering each part of the DNA.
+
+\section{Squiggles alignment with Dynamic Time Warping}
+To align two squiggles we use method called Dynamic Time Warping (DTW).
+DTW is widely used in audio processing and speech recognition.
+
+\subsection{Dynamic Time Warping}
+We define a cost function $c(i,j)$ which tells price for aligning value $i$ to value $j$. It can be for example euclidean distance.
+
+By evaluating cost function for two sequences $u$ and $v$, we calculate a cost matrix $C$ where $C[i,j]=c(u_i,v_j)$.
+The optimal alignment of this two sequences can be represented as a path from $C[1,1]$ to $C[n,m]$ with lowest sum of costs. We call such path a warping path.
+
+\subsection{Optimization}
+The complexity of this approach is quadratic, but can be simply reduced to linear by restricting area where warping path can be to a band with constant width
+
+\subsection{Multiple alignment}

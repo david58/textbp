@@ -1,0 +1,123 @@
+\chapter{Sequence Alignment}
+
+\label{kap:alignment} % id kapitoly pre prikaz ref
+
+
+Alignment is the task of locating equivalent regions of two or more sequences to find their similarity.
+The large similarity often mean the same biological function or common ancestor in evolution history.
+In this chapter we formalize problem of alignment and present standard algorithms
+solving this problem.
+
+\section{Pairwise alignment}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\theoremstyle{definition}
+\begin{definition}{Alignment}
+Let $u=u_1 \dots u_n$, $v=v_1 \dots v_n$ be two sequences where $u_i,v_i\in \{A, C, T, G\}$ and $M$ be a matrix
+$$M=
+\begin{pmatrix}
+  M_{1,1} & M_{1,2} & \dots & M_{1,k} \\
+  M_{2,1} & M_{2,2} & \dots & M_{2,k}
+\end{pmatrix}$$
+We call $M$ an alignment of $u$ and $v$ if:
+\begin{enumerate}
+\item $\forall i,j : M_{i,j}\in \{A,C,T,G,-\}$
+\item $M_{1,1} M_{1,2} \dots M_{1,k}$ is a word created by inserting dashes into $u$
+\item $M_{2,1} M_{2,2} \dots M_{2,k}$ is a word created by inserting dashes into $v$
+\item No column contain two dashes
+\end{enumerate}
+\end{definition}
+
+For example 
+$$
+\begin{pmatrix}
+   -GTACGTCCTAA \\
+   TGTACGCC-T--
+\end{pmatrix}$$
+is one  of many possible alignments of sequences $GTACGTCCTAA$ and $TGTACGCCT$.
+Another alignment of these sequences could be 
+$$\begin{pmatrix}
+   ----GTACGTCCTAA \\
+   TGTACGCC----T--
+\end{pmatrix}$$
+To find the best alignment (finding most of similarities), we define a scoring system which assigns a numeric value to algnment.
+
+Basic scoring system can be $+1$ for each matching column, $-1$ for every other column.
+
+\begin{definition}{Global alignment}
+Given two sequences and scoring system, global alignment is alignment with highest score in scoring system.
+\end{definition}
+
+Sometimes, it is better to search for most similar part of two sequences. We call this approach Local alignment
+
+\begin{definition}{Local alignment}
+Given two sequences $u$, $v$ and scoring system. Let $u'$ and $v'$ be subsequences of $u$ and $v$ such, that their global alignment has highest score among all subsequences of $u$ and $v$. Local alignment of $u$ and $v$ is global alignment of $u'$ and $v'$.
+\end{definition}
+
+\subsection{Algorithm}
+Typically used algorithm for computing global alignment is Needleman-Wunsch algorithm.
+
+It is based on dynamic programming. 
+
+Let $u=u_1 \dots u_n$, $v=v_1 \dots v_n$ be two sequences. We construct matrix $A[n,m]$ where $A[i,j]$ is global alignment score of $u_1 \dots u_i$ and $v_1 \dots v_j$.
+
+Let $s(i,j)$ be score of alignment of $u_i$ and $v_j$ ($1$ if they are equal, -1 otherwise.
+Matrix $A$ is constructed dynamically, where $A[i,j]$ is computed as maximum of three possibilities:
+\begin{enumerate}
+\item $A[i-1,j-1]+s(i,j)$
+\item $A[i-1,j]-1$
+\item $A[i,j-1]-1$
+\end{enumerate}
+
+Final alignment score is $A[n,m]$ and alignment can be reconstructed by finding path of computation from $A[n,m]$ to $A[1,1]$.
+
+This algorithm can be simple modified to find local alignment by two steps.
+Firstly, we add fourth possibility:
+\begin{enumerate}
+ \setcounter{enumi}{4}
+\item $0$
+\end{enumerate}
+This allows to change starting point of alignment, if that is better.
+Secondly, final score is maximum value in matrix. That allows to change ending point of alignment.
+
+Reconstruction of alignment is done by finding path from this maximum value to $0$.
+
+\section{Multiple alignment}
+Once we have large dataset of evolutionary related DNA sequences that share common ancestor, we might find something about such ancestor, if we look on their all similarity.
+
+\begin{definition}{Multiple alignment}
+Let $u_1=u_{1,1} \dots u_{1,m_1}, \ldots, u_n=u_{n,1} \dots u_{n,m_n}$ be $n$ sequences where $u_{i,j} \in \{A, C, T, G\}$ and $M$ be a matrix
+$$M=
+\begin{pmatrix}
+  M_{1,1} & M_{1,2} & \dots & M_{1,k} \\
+  M_{2,1} & M_{2,2} & \dots & M_{2,k} \\
+  \vdots&&&\vdots\\
+  M_{n,1} & M_{n,2} & \dots & M_{n,k} \\
+\end{pmatrix}$$
+We call $M$ an alignment of $u_1, \dots, u_n$ if:
+\begin{enumerate}
+\item $\forall i,j : M_{i,j}\in \{A,C,T,G,-\}$
+\item $M_{i,1} M_{i,2} \dots M_{i,k}$ is a word created by inserting dashes into $u_i$
+\item No column contain $n$ dashes
+\end{enumerate}
+\end{definition}
+
+We can see that alignment of two sequences is a special case of multiple alignment.
+
+\subsection{Dynamic programming}
+We can modify Needleman-Wunsch algorithm to solve this problem.
+Matrix $A$ would become $n$-dimensional tensor and complexity of computing such matrix would be $O(max(m_i)^n)$.
+
+To find the global optimum for $n$ sequences this way has been shown to be an NP-complete problem.\cite{wang1994complexity}
+
+\subsection{Progressive alignment}
+Most common heuristic approach to multiple alignment is progressive technique.
+Progressive alignment builds up a final alignment by combining pairwise alignments.
+A guide tree which decides order of pairwise alignments is built and final aligning follows this tree.
+
+Problematic part of this approach is aligning two alignments which can be done in many various ways.
+
+\subsection{Iterative methods}
+Another method is to construct alignment by adding sequences one by one to final alignment.
+This approximation improves efficiency at the cost of accuracy. 
