@@ -2,7 +2,6 @@
 
 \label{kap:alignment} % id kapitoly pre prikaz ref
 
-
 Alignment is the task of locating equivalent regions of two or more sequences to find their similarity.
 The large similarity often mean the same biological function or common ancestor in evolution history.
 In this chapter we formalize problem of alignment and present standard algorithms
@@ -14,7 +13,7 @@ solving this problem.
 \newtheorem{definition}{Definition}[section]
 \theoremstyle{definition}
 \begin{definition}{Alignment}
-Let $u=u_1 \dots u_n$, $v=v_1 \dots v_n$ be two sequences where $u_i,v_i\in \{A, C, T, G\}$ and $M$ be a matrix
+Let $u=u_1 \dots u_n$, $v=v_1 \dots v_m$ be two sequences where $u_i,v_i\in \{A, C, T, G\}$ and $M$ be a matrix
 $$M=
 \begin{pmatrix}
   M_{1,1} & M_{1,2} & \dots & M_{1,k} \\
@@ -41,7 +40,7 @@ $$\begin{pmatrix}
    ----GTACGTCCTAA \\
    TGTACGCC----T--
 \end{pmatrix}$$
-To find the best alignment (finding most of similarities), we define a scoring system which assigns a numeric value to algnment.
+To find the best alignment (finding most of similarities), we define a scoring system which assigns a numeric value to alignment.
 
 Basic scoring system can be $+1$ for each matching column, $-1$ for every other column.
 
@@ -52,7 +51,7 @@ Given two sequences and scoring system, global alignment is alignment with highe
 Sometimes, it is better to search for most similar part of two sequences. We call this approach Local alignment
 
 \begin{definition}{Local alignment}
-Given two sequences $u$, $v$ and scoring system. Let $u'$ and $v'$ be subsequences of $u$ and $v$ such, that their global alignment has highest score among all subsequences of $u$ and $v$. Local alignment of $u$ and $v$ is global alignment of $u'$ and $v'$.
+Given two sequences $u$, $v$ and scoring system. Let $u'$ and $v'$ be substrings of $u$ and $v$ such, that their global alignment has highest score among all substrings of $u$ and $v$. Local alignment of $u$ and $v$ is global alignment of $u'$ and $v'$.
 \end{definition}
 
 \subsection{Algorithm}
@@ -62,7 +61,7 @@ It is based on dynamic programming.
 
 Let $u=u_1 \dots u_n$, $v=v_1 \dots v_n$ be two sequences. We construct matrix $A[n,m]$ where $A[i,j]$ is global alignment score of $u_1 \dots u_i$ and $v_1 \dots v_j$.
 
-Let $s(i,j)$ be score of alignment of $u_i$ and $v_j$ ($1$ if they are equal, -1 otherwise.
+Let $s(i,j)$ be score of alignment of $u_i$ and $v_j$ ($1$ if they are equal, -1 otherwise).
 Matrix $A$ is constructed dynamically, where $A[i,j]$ is computed as maximum of three possibilities:
 \begin{enumerate}
 \item $A[i-1,j-1]+s(i,j)$
@@ -75,7 +74,7 @@ Final alignment score is $A[n,m]$ and alignment can be reconstructed by finding 
 This algorithm can be simple modified to find local alignment by two steps.
 Firstly, we add fourth possibility:
 \begin{enumerate}
- \setcounter{enumi}{4}
+ \setcounter{enumi}{3}
 \item $0$
 \end{enumerate}
 This allows to change starting point of alignment, if that is better.
@@ -84,6 +83,7 @@ Secondly, final score is maximum value in matrix. That allows to change ending p
 Reconstruction of alignment is done by finding path from this maximum value to $0$.
 
 \section{Multiple alignment}
+% TODO prepísať nech to súvisí su squglami
 Once we have large dataset of evolutionary related DNA sequences that share common ancestor, we might find something about such ancestor, if we look on their all similarity.
 
 \begin{definition}{Multiple alignment}
@@ -107,9 +107,9 @@ We can see that alignment of two sequences is a special case of multiple alignme
 
 \subsection{Dynamic programming}
 We can modify Needleman-Wunsch algorithm to solve this problem.
-Matrix $A$ would become $n$-dimensional tensor and complexity of computing such matrix would be $O(max(m_i)^n)$.
+Matrix $A$ would become $n$-dimensional and complexity of computing such matrix would be $O(max(m_i)^n)$.
 
-To find the global optimum for $n$ sequences this way has been shown to be an NP-complete problem.\cite{wang1994complexity}
+To find the global optimum for $n$ sequences has been shown to be an NP-complete problem.\cite{wang1994complexity}
 
 \subsection{Progressive alignment}
 Most common heuristic approach to multiple alignment is progressive technique.

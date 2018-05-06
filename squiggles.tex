@@ -2,7 +2,7 @@
 
 \label{kap:squiggles} % id kapitoly pre prikaz ref
 
-In this chapter we introduce raw MinION data and a way to align them.
+In this chapter we describe our work.
 
 \section{Squiggles}
 
@@ -12,14 +12,51 @@ Typically we have multiple squiggles covering each part of the DNA.
 \section{Squiggles alignment with Dynamic Time Warping}
 To align two squiggles we use method called Dynamic Time Warping (DTW).
 DTW is widely used in audio processing and speech recognition.
+It uses a simmilar approach than Needleman-wunsh algorithm for sequence alignment.
+% \subsection{Dynamic Time Warping}
 
-\subsection{Dynamic Time Warping}
 We define a cost function $c(i,j)$ which tells price for aligning value $i$ to value $j$. It can be for example euclidean distance.
 
 By evaluating cost function for two sequences $u$ and $v$, we calculate a cost matrix $C$ where $C[i,j]=c(u_i,v_j)$.
-The optimal alignment of this two sequences can be represented as a path from $C[1,1]$ to $C[n,m]$ with lowest sum of costs. We call such path a warping path.
+The optimal alignment of this two sequences can be represented as a path from $C[1,1]$ to $C[n,m]$ with lowest sum of costs. We call such path a warping path. The lowest sum also tells us the similarity of those sequences.
+
+The warping path gives us a list of pairs of points from first and second sequence that are aligned together.
 
 \subsection{Optimization}
-The complexity of this approach is quadratic, but can be simply reduced to linear by restricting area where warping path can be to a band with constant width
+The complexity of this approach is quadratic, but can be simply reduced to linear by restricting area where warping path can be to a band with constant width. 
+TODO obrazok.
+
+\subsection{Signal reconstruction from warping path}
+To create one signal out of two with all their similarities, we will use the warping path created by DTW.
+Altough the signals are very similar, alignment still contains some insertions in both ways. 
+
+TODO obrazok
+
+When aligning sequences we had three posibilitis. Match, missmatch or aligned to dash. 
+This time, we have full pairing of points. Each point from first sequence have the corresponding point
+in second sequence. This also means, that sometimes one point from one sequence corresponds to more points from the other sequence.
+We considered multiple ways to solve this problem and compared them.
+
+First approach was to calculate average of each pair of points and concat them to final signal. The signal we created
+was slightli longer, and not what basecaller expect.
+
+Second approach was to take first sequence as leading, and construct final signal by calculating average of point from this sequence and all points aligned to it, in every point of this sequence. This approach puts a high tension on first sequence.
+If some part is missing, and it alignes to one point, it will still miss. Same if some part is longer than should, one point will align to it, and it will stay there. Advantage is, that it looks exactly like signal that basecaller expect.
 
 \subsection{Multiple alignment}
+
+To align multiple signals, we chosen iterative method as signals are much longer than DNA sequencies and iterative method is faster.
+
+If we would just iteratively add ...
+
+First approach was to calculate weighted average when aligning $i$-th signal to consensus of $i-1$ already aligned signals. 
+Result is that in each point, every sequence have same weight.
+
+Second approach was to improve first one, by remembering how many points were aligned from all sequences to each point. We used
+this information when reconstructing final signal. For each point we calculated average number of point aligned to it, and put it that many times to final sequence.
+
+This approach was better in some cases, but worse in other cases. It maight be coused because we have still used first sequence as leading, so no missing part could be added.
+
+With this different way of reconstructing final sequence, we can afford to take full alignment each time. 
+It will result in much longer signal than expected, which will be later reduced by realigning all sequences to it and counting 
+points aligned to each point.
