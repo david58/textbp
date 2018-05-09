@@ -2,39 +2,78 @@
 
 \label{kap:squiggles} % id kapitoly pre prikaz ref
 
-In this chapter we describe our work.
+In this chapter we describe our work. We took a different approach to composing DNA sequence from multiple squiggles. 
+We took squggles that correspond to the same part of refference sequence and aligned them together to produce one signal 
+that will be basecalled. We designed several ways of multiple squggles alignment to generate signal most similar to the ideal signal.
 
-\section{Squiggles}
+\section{Squiggles and preprocessing}
 
-MinION device produces a sequence of measured values of current passing a nanopore. We call this sequence a squiggle.
-Typically we have multiple squiggles covering each part of the DNA.
+MinION device produces a sequences of measured values of current passing a nanopore. We call this sequences a squiggles.
+Typically we have multiple squiggles covering each part of the DNA. Raw signal contain values in pA between $0$ and several hundreds. 
+This values have consistent deviation in single read but can be shifted in different read. 
+
+The best way to hide this differences is to scale the sequence such that resulting mean value is 0 and standard deviation is 1.
+TODO refference Kubo H.
 
 \section{Squiggles alignment with Dynamic Time Warping}
 To align two squiggles we use method called Dynamic Time Warping (DTW).
 DTW is widely used in audio processing and speech recognition.
-It uses a simmilar approach than Needleman-wunsh algorithm for sequence alignment.
-% \subsection{Dynamic Time Warping}
+It uses a similar approach as Needleman-Wunsh algorithm for sequence alignment but does not specify match or mismatch.
 
-We define a cost function $c(i,j)$ which tells price for aligning value $i$ to value $j$. It can be for example euclidean distance.
+\subsection{Dynamic Time Warping}
+
+We define a cost function $c(i,j)$ which tells us price for aligning value $i$ to value $j$. 
+It can be for example euclidean distance $abs(i-j)$.
 
 By evaluating cost function for two sequences $u$ and $v$, we calculate a cost matrix $C$ where $C[i,j]=c(u_i,v_j)$.
-The optimal alignment of this two sequences can be represented as a path from $C[1,1]$ to $C[n,m]$ with lowest sum of costs. We call such path a warping path. The lowest sum also tells us the similarity of those sequences.
+The best alignment of this two sequences can be represented as a continuous path from $C[1,1]$ to $C[n,m]$ with lowest sum of costs. 
+We call such path a warping path. The sum of costs on such path also tells us the similarity of those sequences.
 
-The warping path gives us a list of pairs of points from first and second sequence that are aligned together.
 
-\subsection{Optimization}
-The complexity of this approach is quadratic, but can be simply reduced to linear by restricting area where warping path can be to a band with constant width. 
-TODO obrazok.
+\begin{figure}
+  \centering
+  TODO
+  %\includegraphics[width=0.5\textwidth]{gull}
+  \caption{obrazok na ktorom je warping path}
+\end{figure}
+
+The warping path can be represented as a list of coordinates from matrix $C$.
+
+
+\subsection{Implementation}
+To find the best path, we will actually not compute matrix $C$ with costs of aligning single values.
+Instead, we will calculate matrix $A$ where $A[i,j]$ contains value of warping path of sequences $u_1...u_i$ and $v_1...v_j$ same as we did in Needleman-Wunsh algorithm. 
+
+TODO výpočet $A$.
+
+Finally we will find warping path in $A$ by following lowest values from $A[n,m]$ to $A[1,1]$. 
+TODO vysvetliť.
+
+The complexity of this implementation is quadratic, but can be simply reduced to almost linear by restricting area where warping path can be to a band with constant width. We will define $c(i,j)=-\infty$ for all $i,j$ not in the belt. This way we will easily see if this belt does not cover whole warping path by checking if the value of chosen point is finite while constructing warping path. 
+When belt is not wide enough, we will restart computation with twice as wide belt.
+\begin{figure}
+  \centering
+  TODO
+  %\includegraphics[width=0.5\textwidth]{gull}
+  \caption{obrazok vymedzeného pásu.}
+\end{figure}
+
 
 \subsection{Signal reconstruction from warping path}
-To create one signal out of two with all their similarities, we will use the warping path created by DTW.
+To create one signal out of two, we will use the warping path created by DTW.
 Altough the signals are very similar, alignment still contains some insertions in both ways. 
 
-TODO obrazok
+\begin{figure}
+  \centering
+  TODO
+  %\includegraphics[width=0.5\textwidth]{gull}
+  \caption{dva grafi lignalov pod sebov s čiarami medzi zarovnanými bodmy.}
+\end{figure}
 
-When aligning sequences we had three posibilitis. Match, missmatch or aligned to dash. 
+When aligning DNA sequences, we had three posibilities. Match, mismatch or aligned to dash. 
 This time, we have full pairing of points. Each point from first sequence have the corresponding point
-in second sequence. This also means, that sometimes one point from one sequence corresponds to more points from the other sequence.
+in second sequence. This also means, that sometimes one point from one sequence corresponds to multiple 
+points from the other sequence.
 We considered multiple ways to solve this problem and compared them.
 
 First approach was to calculate average of each pair of points and concat them to final signal. The signal we created
