@@ -29,18 +29,20 @@ We call $M$ an alignment of $u$ and $v$ if:
 \end{definition}
 
 For example 
+\setlength{\arraycolsep}{1pt}
+\setcounter{MaxMatrixCols}{20}
 $$
 \begin{pmatrix}
-   -GTACGTCCTAA \\
-   TGTACGCC-T--
+   - & G & T & A & C & G & T & C & C & T & A & A \\
+   T & G & T & A & C & G & C & C & - & T & - & -
 \end{pmatrix}$$
 is one  of many possible alignments of sequences $GTACGTCCTAA$ and $TGTACGCCT$.
 Another alignment of these sequences could be 
 $$\begin{pmatrix}
-   ----GTACGTCCTAA \\
-   TGTACGCC----T--
+   -&-&-&-&G&T&A&C&G&T&C&C&T&A&A \\
+   T&G&T&A&C&G&C&C&-&-&-&-&T&-&-
 \end{pmatrix}$$
-To find the best alignment (finding most of similarities), we define a scoring system which assigns a numeric value to alignment.
+To find the best alignment (with most of similarities), we define a scoring system which assigns a numeric value to alignment.
 
 Basic scoring system can be $+1$ for each matching column, $-1$ for every other column.
 
@@ -61,17 +63,22 @@ It is based on dynamic programming.
 
 Let $u=u_1 \dots u_n$, $v=v_1 \dots v_n$ be two sequences. We construct matrix $A[n,m]$ where $A[i,j]$ is global alignment score of $u_1 \dots u_i$ and $v_1 \dots v_j$.
 
-Let $s(i,j)$ be score of alignment of $u_i$ and $v_j$ ($1$ if they are equal, -1 otherwise).
-Matrix $A$ is constructed dynamically, where $A[i,j]$ is computed as maximum of three possibilities:
+Let $s(i,j)$ be score of alignment of $u_i$ and $v_j$ ($1$ if they are equal, $-1$ otherwise).
+Matrix $A$ is constructed dynamically row by row, where $A[i,j]$ is computed as maximum of three possibilities:
 \begin{enumerate}
 \item $A[i-1,j-1]+s(i,j)$
 \item $A[i-1,j]-1$
 \item $A[i,j-1]-1$
 \end{enumerate}
 
+In first possibility we align $u_i$ to $v_j$ as a match or mismatch, in second we insert dash into first sequence and in third we insert dash into second sequence.
+
 Final alignment score is $A[n,m]$ and alignment can be reconstructed by finding path of computation from $A[n,m]$ to $A[1,1]$.
 
-This algorithm can be simple modified to find local alignment by two steps.
+This path can be simply found by following highest values of three possibilities used to compute values in matrix $A$. 
+
+
+Needleman-Wunsch algorithm can be simple modified to find local alignment by two steps.
 Firstly, we add fourth possibility:
 \begin{enumerate}
  \setcounter{enumi}{3}
@@ -80,11 +87,10 @@ Firstly, we add fourth possibility:
 This allows to change starting point of alignment, if that is better.
 Secondly, final score is maximum value in matrix. That allows to change ending point of alignment.
 
-Reconstruction of alignment is done by finding path from this maximum value to $0$.
+Reconstruction of alignment is done by finding path from this maximum value to $0$ somewhere in matrix $A$.
 
 \section{Multiple alignment}
-% TODO prepísať nech to súvisí su squglami
-Once we have large dataset of evolutionary related DNA sequences that share common ancestor, we might find something about such ancestor, if we look on their all similarity.
+Once we have large dataset of evolutionary related DNA sequences that share common ancestor, we might find something about such ancestor, if we look on their overall similarity.
 
 \begin{definition}{Multiple alignment}
 Let $u_1=u_{1,1} \dots u_{1,m_1}, \ldots, u_n=u_{n,1} \dots u_{n,m_n}$ be $n$ sequences where $u_{i,j} \in \{A, C, T, G\}$ and $M$ be a matrix
@@ -111,13 +117,19 @@ Matrix $A$ would become $n$-dimensional and complexity of computing such matrix 
 
 To find the global optimum for $n$ sequences has been shown to be an NP-complete problem.\cite{wang1994complexity}
 
-\subsection{Progressive alignment}
+\subsection{Heuristics}
+As DNA data are usually big, exponencial complexity is unacceptable.
+Several heuristic algorithms were developed with different time complexity and accuracy.
+
+\subsubsection{Progressive alignment}
 Most common heuristic approach to multiple alignment is progressive technique.
 Progressive alignment builds up a final alignment by combining pairwise alignments.
 A guide tree which decides order of pairwise alignments is built and final aligning follows this tree.
-
+Such tree can by composed by finding most similar pairs among all possible pairwise alignments resulting into
+quadratic number of alignments.
 Problematic part of this approach is aligning two alignments which can be done in many various ways.
 
 \subsection{Iterative methods}
 Another method is to construct alignment by adding sequences one by one to final alignment.
-This approximation improves efficiency at the cost of accuracy. 
+This way we only need linear number of alignments but we are aligning sequence to alignment which can again be done in various ways.
+Efficiency is improved at the cost of accuracy.

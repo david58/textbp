@@ -3,31 +3,31 @@
 \label{kap:squiggles} % id kapitoly pre prikaz ref
 
 In this chapter we describe our work. We took a different approach to composing DNA sequence from multiple squiggles. 
-We took squggles that correspond to the same part of refference sequence and aligned them together to produce one signal 
-that will be basecalled. We designed several ways of multiple squggles alignment to generate signal most similar to the ideal signal.
+We took squiggles that correspond to the same part of reference sequence and aligned them together to produce one signal 
+that will be basecalled. We designed several ways of multiple squiggles alignment to generate signal most similar to the ideal signal.
 
 \section{Squiggles and preprocessing}
 
 MinION device produces a sequences of measured values of current passing a nanopore. We call this sequences a squiggles.
 Typically we have multiple squiggles covering each part of the DNA. Raw signal contain values in pA between $0$ and several hundreds. 
-This values have consistent deviation in single read but can be shifted in different read. 
+This values have consistent deviation in single read but can be shifted in different read from different nanopore. 
 
 The best way to hide this differences is to scale the sequence such that resulting mean value is 0 and standard deviation is 1.
 TODO refference Kubo H.
 
 \section{Squiggles alignment with Dynamic Time Warping}
 To align two squiggles we use method called Dynamic Time Warping (DTW).
-DTW is widely used in audio processing and speech recognition.
-It uses a similar approach as Needleman-Wunsh algorithm for sequence alignment but does not specify match or mismatch.
+DTW is widely used in audio processing and speech recognition.(TODO refference)
+It uses a similar approach as Needleman-Wunsh algorithm for sequence alignment but does not specify match or mismatch but cost function.
 
 \subsection{Dynamic Time Warping}
 
 We define a cost function $c(i,j)$ which tells us price for aligning value $i$ to value $j$. 
 It can be for example euclidean distance $abs(i-j)$.
 
-By evaluating cost function for two sequences $u$ and $v$, we calculate a cost matrix $C$ where $C[i,j]=c(u_i,v_j)$.
+By evaluating cost function for two sequences $u$ and $v$, we calculate a cost matrix $C$ where $C[i,j] = c(u_i,v_j)$.
 The best alignment of this two sequences can be represented as a continuous path from $C[1,1]$ to $C[n,m]$ with lowest sum of costs. 
-We call such path a warping path. The sum of costs on such path also tells us the similarity of those sequences.
+We call such path a warping path and sum of costs a cost of alignment. The cost of alignment also tells us the similarity of those sequences.
 
 
 \begin{figure}
@@ -41,10 +41,11 @@ The warping path can be represented as a list of coordinates from matrix $C$.
 
 
 \subsection{Implementation}
-To find the best path, we will actually not compute matrix $C$ with costs of aligning single values.
-Instead, we will calculate matrix $A$ where $A[i,j]$ contains value of warping path of sequences $u_1...u_i$ and $v_1...v_j$ same as we did in Needleman-Wunsh algorithm. 
+To find the best path, we will not compute matrix $C$ with costs of aligning single values.
+Instead, we will calculate matrix $A$ where $A[i,j]$ contains cost of alignment of sequences $u_1...u_i$ and $v_1...v_j$, 
+same as we did in Needleman-Wunsh algorithm. 
 
-TODO výpočet $A$.
+
 
 Finally we will find warping path in $A$ by following lowest values from $A[n,m]$ to $A[1,1]$. 
 TODO vysvetliť.
@@ -62,14 +63,13 @@ When belt is not wide enough, we will restart computation with twice as wide bel
 \subsection{Signal reconstruction from warping path}
 To create one signal out of two, we will use the warping path created by DTW.
 Altough the signals are very similar, alignment still contains some insertions in both ways. 
-
 \begin{figure}
   \centering
   TODO
   %\includegraphics[width=0.5\textwidth]{gull}
   \caption{dva grafi lignalov pod sebov s čiarami medzi zarovnanými bodmy.}
 \end{figure}
-
+\texttt{aaaa}
 When aligning DNA sequences, we had three posibilities. Match, mismatch or aligned to dash. 
 This time, we have full pairing of points. Each point from first sequence have the corresponding point
 in second sequence. This also means, that sometimes one point from one sequence corresponds to multiple 
