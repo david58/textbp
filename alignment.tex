@@ -3,8 +3,8 @@
 \label{kap:alignment} % id kapitoly pre prikaz ref
 
 Alignment is the task of locating equivalent regions of two or more sequences to find their similarity.
-The large similarity often mean the same biological function or common ancestor in evolution history.
-In this chapter we formalize problem of alignment and present standard algorithms
+The large similarity often mean the same biological function or common ancestor in evolutionary history.
+In this chapter, we formalize the problem of alignment and present standard algorithms
 solving this problem.
 
 \section{Pairwise alignment}
@@ -12,7 +12,7 @@ solving this problem.
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[section]
 \theoremstyle{definition}
-\begin{definition}{Alignment}
+\begin{definition}[Alignment]
 Let $u=u_1 \dots u_n$, $v=v_1 \dots v_m$ be two sequences where $u_i,v_i\in \{A, C, T, G\}$ and $M$ be a matrix
 $$M=
 \begin{pmatrix}
@@ -42,22 +42,22 @@ $$\begin{pmatrix}
    -&-&-&-&G&T&A&C&G&T&C&C&T&A&A \\
    T&G&T&A&C&G&C&C&-&-&-&-&T&-&-
 \end{pmatrix}$$
-To find the best alignment (with most of similarities), we define a scoring system which assigns a numeric value to alignment.
+To find the best alignment (with most of the similarities), we define a scoring system which assigns a numeric value to alignment.
 
-Basic scoring system can be $+1$ for each matching column, $-1$ for every other column.
+A basic scoring system can be $+1$ for each matching column, $-1$ for every other column.
 
-\begin{definition}{Global alignment}
-Given two sequences and scoring system, global alignment is alignment with highest score in scoring system.
+\begin{definition}[Global alignment]
+Given two sequences and scoring system, global alignment is alignment with the highest score in the scoring system.
 \end{definition}
 
 Sometimes, it is better to search for most similar part of two sequences. We call this approach Local alignment
 
-\begin{definition}{Local alignment}
+\begin{definition}[Local alignment]
 Given two sequences $u$, $v$ and scoring system. Let $u'$ and $v'$ be substrings of $u$ and $v$ such, that their global alignment has highest score among all substrings of $u$ and $v$. Local alignment of $u$ and $v$ is global alignment of $u'$ and $v'$.
 \end{definition}
 
 \subsection{Algorithm}
-Typically used algorithm for computing global alignment is Needleman-Wunsch algorithm.
+Typically used algorithm for computing global alignment is the Needleman-Wunsch algorithm.
 
 It is based on dynamic programming. 
 
@@ -71,28 +71,28 @@ Matrix $A$ is constructed dynamically row by row, where $A[i,j]$ is computed as 
 \item $A[i,j-1]-1$
 \end{enumerate}
 
-In first possibility we align $u_i$ to $v_j$ as a match or mismatch, in second we insert dash into first sequence and in third we insert dash into second sequence.
+In the first possibility we align $u_i$ to $v_j$ as a match or mismatch, in the second we insert dash into the first sequence and in the third, we insert dash into the second sequence.
 
 Final alignment score is $A[n,m]$ and alignment can be reconstructed by finding path of computation from $A[n,m]$ to $A[1,1]$.
 
 This path can be simply found by following highest values of three possibilities used to compute values in matrix $A$. 
 
 
-Needleman-Wunsch algorithm can be simple modified to find local alignment by two steps.
+The Needleman-Wunsch algorithm can be simply modified to find local alignment by two steps.
 Firstly, we add fourth possibility:
 \begin{enumerate}
  \setcounter{enumi}{3}
 \item $0$
 \end{enumerate}
 This allows to change starting point of alignment, if that is better.
-Secondly, final score is maximum value in matrix. That allows to change ending point of alignment.
+Secondly, the final score is the maximum value in the matrix. That allows changing ending point of alignment.
 
-Reconstruction of alignment is done by finding path from this maximum value to $0$ somewhere in matrix $A$.
+Reconstruction of alignment is done by finding the path from this maximum value to $0$ somewhere in matrix $A$.
 
 \section{Multiple alignment}
-Once we have large dataset of evolutionary related DNA sequences that share common ancestor, we might find something about such ancestor, if we look on their overall similarity.
+Once we have a large dataset of evolutionarily related DNA sequences that share a common ancestor, we might find something about such ancestor, if we look at their overall similarity.
 
-\begin{definition}{Multiple alignment}
+\begin{definition}[Multiple alignment]
 Let $u_1=u_{1,1} \dots u_{1,m_1}, \ldots, u_n=u_{n,1} \dots u_{n,m_n}$ be $n$ sequences where $u_{i,j} \in \{A, C, T, G\}$ and $M$ be a matrix
 $$M=
 \begin{pmatrix}
@@ -109,7 +109,7 @@ We call $M$ an alignment of $u_1, \dots, u_n$ if:
 \end{enumerate}
 \end{definition}
 
-We can see that alignment of two sequences is a special case of multiple alignment.
+We can see that alignment of two sequences is a special case of multiple alignments.
 
 \subsection{Dynamic programming}
 We can modify Needleman-Wunsch algorithm to solve this problem.
@@ -118,18 +118,18 @@ Matrix $A$ would become $n$-dimensional and complexity of computing such matrix 
 To find the global optimum for $n$ sequences has been shown to be an NP-complete problem.\cite{wang1994complexity}
 
 \subsection{Heuristics}
-As DNA data are usually big, exponencial complexity is unacceptable.
+As DNA data are usually big, exponential complexity is unacceptable.
 Several heuristic algorithms were developed with different time complexity and accuracy.
 
 \subsubsection{Progressive alignment}
 Most common heuristic approach to multiple alignment is progressive technique.
 Progressive alignment builds up a final alignment by combining pairwise alignments.
-A guide tree which decides order of pairwise alignments is built and final aligning follows this tree.
-Such tree can by composed by finding most similar pairs among all possible pairwise alignments resulting into
-quadratic number of alignments.
-Problematic part of this approach is aligning two alignments which can be done in many various ways.
+A guide tree which decides an order of pairwise alignments is built and final aligning follows this tree.
+Such tree can be composed by finding most similar pairs among all possible pairwise alignments resulting into
+a quadratic number of alignments.
+The problematic part of this approach is aligning two alignments which can be done in many various ways.
 
-\subsection{Iterative methods}
+\subsubsection{Iterative methods}
 Another method is to construct alignment by adding sequences one by one to final alignment.
-This way we only need linear number of alignments but we are aligning sequence to alignment which can again be done in various ways.
+This way we only need a linear number of alignments but we are aligning sequence to an alignment which can again be done in various ways.
 Efficiency is improved at the cost of accuracy.
