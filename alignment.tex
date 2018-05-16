@@ -3,8 +3,8 @@
 \label{kap:alignment} % id kapitoly pre prikaz ref
 
 Alignment is the task of locating equivalent regions of two or more sequences to find their similarity.
-The large similarity often mean the same biological function or common ancestor in evolutionary history.
-In this chapter, we formalize the problem of alignment and present standard algorithms
+The large similarity often mean the same biological function or common ancestor in the evolutionary history.
+In this chapter, we formalize the problem of alignment and present standard algorithms for
 solving this problem.
 
 \section{Pairwise alignment}
@@ -24,7 +24,7 @@ We call $M$ an alignment of $u$ and $v$ if:
 \item $\forall i,j : M_{i,j}\in \{A,C,T,G,-\}$
 \item $M_{1,1} M_{1,2} \dots M_{1,k}$ is a word created by inserting dashes into $u$
 \item $M_{2,1} M_{2,2} \dots M_{2,k}$ is a word created by inserting dashes into $v$
-\item No column contain two dashes
+\item No column contains two dashes
 \end{enumerate}
 \end{definition}
 
@@ -42,55 +42,52 @@ $$\begin{pmatrix}
    -&-&-&-&G&T&A&C&G&T&C&C&T&A&A \\
    T&G&T&A&C&G&C&C&-&-&-&-&T&-&-
 \end{pmatrix}$$
-To find the best alignment (with most of the similarities), we define a scoring system which assigns a numeric value to alignment.
+To find the best alignment (with most of the similarities), we define a scoring system which assigns a numeric value to the alignment.
 
 A basic scoring system can be $+1$ for each matching column, $-1$ for every other column.
 
 \begin{definition}[Global alignment]
-Given two sequences and scoring system, global alignment is alignment with the highest score in the scoring system.
+Given two sequences and a scoring system, the global alignment is the alignment with the highest score in the scoring system.
 \end{definition}
 
-Sometimes, it is better to search for most similar part of two sequences. We call this approach Local alignment
+Sometimes, it is better to search for the most similar part of the two sequences. We call this approach the local alignment
 
 \begin{definition}[Local alignment]
-Given two sequences $u$, $v$ and scoring system. Let $u'$ and $v'$ be substrings of $u$ and $v$ such, that their global alignment has highest score among all substrings of $u$ and $v$. Local alignment of $u$ and $v$ is global alignment of $u'$ and $v'$.
+Given two sequences $u$, $v$ and a scoring system. Let $u'$ and $v'$ be substrings of $u$ and $v$ such that their global alignment has the highest score among all substrings of $u$ and $v$. Local alignment of $u$ and $v$ is the global alignment of $u'$ and $v'$.
 \end{definition}
 
-\subsection{Algorithm}
-Typically used algorithm for computing global alignment is the Needleman-Wunsch algorithm.
+\section{Needleman-Wunsch algorithm}
+\label{nwalg}
+Needleman-Wunsch algorithm \cite{needleman} for computing global alignment is based on dynamic programming. 
 
-It is based on dynamic programming. 
-
-Let $u=u_1 \dots u_n$, $v=v_1 \dots v_n$ be two sequences. We construct matrix $A[n,m]$ where $A[i,j]$ is global alignment score of $u_1 \dots u_i$ and $v_1 \dots v_j$.
+Let $u=u_1 \dots u_n$, $v=v_1 \dots v_n$ be two sequences. We construct matrix $A[n,m]$ where $A[i,j]$ is the global alignment score of $u_1 \dots u_i$ and $v_1 \dots v_j$.
 
 Let $s(i,j)$ be score of alignment of $u_i$ and $v_j$ ($1$ if they are equal, $-1$ otherwise).
-Matrix $A$ is constructed dynamically row by row, where $A[i,j]$ is computed as maximum of three possibilities:
+Matrix $A$ is constructed dynamically row by row, where $A[i,j]$ is computed as the maximum of three possibilities:
 \begin{enumerate}
 \item $A[i-1,j-1]+s(i,j)$
 \item $A[i-1,j]-1$
 \item $A[i,j-1]-1$
 \end{enumerate}
 
-In the first possibility we align $u_i$ to $v_j$ as a match or mismatch, in the second we insert dash into the first sequence and in the third, we insert dash into the second sequence.
+In the first case, we align $u_i$ to $v_j$ as a match or mismatch. In the second case, we insert dash into the first sequence. In the third case, we insert dash into the second sequence.
 
-Final alignment score is $A[n,m]$ and alignment can be reconstructed by finding path of computation from $A[n,m]$ to $A[1,1]$.
+The final alignment score is $A[n,m]$ and the alignment can be reconstructed by finding the path of computation from $A[n,m]$ to $A[1,1]$.
+This path can be simply found by following the highest values out of the three possibilities used to compute the values in matrix $A$. 
 
-This path can be simply found by following highest values of three possibilities used to compute values in matrix $A$. 
-
-
-The Needleman-Wunsch algorithm can be simply modified to find local alignment by two steps.
-Firstly, we add fourth possibility:
+Needleman-Wunsch algorithm can be easily modified to find the local alignment in two steps.
+First, we add the fourth case:
 \begin{enumerate}
  \setcounter{enumi}{3}
 \item $0$
 \end{enumerate}
-This allows to change starting point of alignment, if that is better.
-Secondly, the final score is the maximum value in the matrix. That allows changing ending point of alignment.
-
-Reconstruction of alignment is done by finding the path from this maximum value to $0$ somewhere in matrix $A$.
+This allows us to change the starting point of the alignment, if doing so leads to a better solution.
+Second, the final score is the maximum value in the matrix, which allows us to change ending points of the alignment.
+Reconstruction of the alignment is done by following the path from the maximum value in the matrix to the closest $0$, 
+where the local alignment begins.
 
 \section{Multiple alignment}
-Once we have a large dataset of evolutionarily related DNA sequences that share a common ancestor, we might find something about such ancestor, if we look at their overall similarity.
+If we have a large dataset of evolutionarily related DNA sequences that share a common ancestor, we might find something about such ancestor, if we look at their overall similarity.
 
 \begin{definition}[Multiple alignment]
 Let $u_1=u_{1,1} \dots u_{1,m_1}, \ldots, u_n=u_{n,1} \dots u_{n,m_n}$ be $n$ sequences where $u_{i,j} \in \{A, C, T, G\}$ and $M$ be a matrix
@@ -105,31 +102,45 @@ We call $M$ an alignment of $u_1, \dots, u_n$ if:
 \begin{enumerate}
 \item $\forall i,j : M_{i,j}\in \{A,C,T,G,-\}$
 \item $M_{i,1} M_{i,2} \dots M_{i,k}$ is a word created by inserting dashes into $u_i$
-\item No column contain $n$ dashes
+\item No column contains $n$ dashes
 \end{enumerate}
 \end{definition}
 
-We can see that alignment of two sequences is a special case of multiple alignments.
+We can see that the alignment of two sequences is a special case of a multiple alignment.
 
 \subsection{Dynamic programming}
 We can modify Needleman-Wunsch algorithm to solve this problem.
-Matrix $A$ would become $n$-dimensional and complexity of computing such matrix would be $O(max(m_i)^n)$.
+Matrix $A$ would become $n$-dimensional and the time complexity of computing such matrix would be $O(\prod\limits_{i=1}^{n} m_{i})$.
+Matrix $A$ can still be constructed dynamically row by row, where $A[i_1,...i_n]$ is computed as the maximum of $n+1$ possibilities:
+\begin{enumerate}
+\item $A[i_1-1,i_2-1, \dots, i_n-1]+s(i,j)$
+\item $A[i_1-1, i_2, i_3, \dots, i_n]-1$
+%\item $A[i_1, i_2-1, i_3, \dots, i_n]-1$
+%\end{enumerate}
+\renewcommand{\labelenumi}{\alph{enumi}+1.}
+%\begin{enumerate}
+\setcounter{enumi}{10}
+\item $A[i_1,\dots, i_k-1, \dots, i_n]-1$
+\setcounter{enumi}{13}
+\item $A[i_1, i_2, i_3, \dots, i_n-1]-1$
+\end{enumerate}
 
-To find the global optimum for $n$ sequences has been shown to be an NP-complete problem.\cite{wang1994complexity}
+To find the global optimum for $n$ sequences has been shown to be an NP-complete problem \cite{wang1994complexity}.
 
 \subsection{Heuristics}
-As DNA data are usually big, exponential complexity is unacceptable.
-Several heuristic algorithms were developed with different time complexity and accuracy.
+Since DNA sequences are usually large, exponential time complexity is unacceptable.
+Several heuristic algorithms were developed, with different time complexities and accuracy.
 
 \subsubsection{Progressive alignment}
-Most common heuristic approach to multiple alignment is progressive technique.
-Progressive alignment builds up a final alignment by combining pairwise alignments.
-A guide tree which decides an order of pairwise alignments is built and final aligning follows this tree.
+The most common heuristic approach to multiple alignment is a progressive technique \cite{progressive}.
+Progressive alignment builds up the final alignment by combining pairwise alignments.
+A binary tree called a guide tree with sequences as leafs decides an order of pairwise alignments.
+The final alignment is built by following that tree from leafs to root.
 Such tree can be composed by finding most similar pairs among all possible pairwise alignments resulting into
 a quadratic number of alignments.
-The problematic part of this approach is aligning two alignments which can be done in many various ways.
+The problematic part of this approach is aligning two alignments which can be done in many various ways \cite{baum}.
 
 \subsubsection{Iterative methods}
-Another method is to construct alignment by adding sequences one by one to final alignment.
-This way we only need a linear number of alignments but we are aligning sequence to an alignment which can again be done in various ways.
-Efficiency is improved at the cost of accuracy.
+Another method is to construct the alignment by adding sequences one by one to the final alignment.
+This way, we only need a linear number of alignments, but we are aligning one sequence to an alignment, which can again be done in various ways.
+Efficiency is improved at the cost of accuracy \cite{iterative}.
