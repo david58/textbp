@@ -18,16 +18,24 @@ we used these preprocessed data for visualization. We can see that this can reve
 
 \section{Alignment}
 To visualize single alignment of signals, we printed two signals vertically side by side and connected
-aligned points between those plots (Fig. \ref{fig:pairing}). 
+aligned points between those plots (Fig. \ref{fig:pairing2}). 
 
-We also extended this visualization for progressive alignment. 
-After each iteration of progressive alignment, we can generate the resulting signal and align it with the previous resulting signal to visualize
+\begin{figure}
+  \centering
+  \includegraphics[width=1.0\textwidth]{images/ciary}
+  \caption{Pairing of points created by DTW.}
+  \label{fig:pairing2}
+\end{figure}
+
+We also extended this visualization for iterative alignment method. 
+After each iteration of iterative alignment, we can generate the resulting signal and align it with the previous resulting signal to visualize
 changes made by last added squiggle. This way we can plot all interim results underneath and print lines between successive pairs (Fig. \ref{fig:pairings}).
+
 
 \begin{figure}[h]
   \centering
   \includegraphics[width=1.0\textwidth]{images/pairings}
-  \caption{Insertions and deletions in process of progressive alignment.}
+  \caption{Insertions and deletions in process of iterative alignment.}
   \label{fig:pairings}
 \end{figure}
 

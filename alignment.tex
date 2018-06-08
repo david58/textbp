@@ -81,7 +81,7 @@ First, we add the fourth case:
  \setcounter{enumi}{3}
 \item $0$
 \end{enumerate}
-This allows us to change the starting point of the alignment, if doing so leads to a better solution.
+This allows us to change the starting point of the alignment if doing so leads to a better solution.
 Second, the final score is the maximum value in the matrix, which allows us to change ending points of the alignment.
 Reconstruction of the alignment is done by following the path from the maximum value in the matrix to the closest $0$, 
 where the local alignment begins.
@@ -134,8 +134,8 @@ Several heuristic algorithms were developed, with different time complexities an
 \subsubsection{Progressive alignment}
 The most common heuristic approach to multiple alignment is a progressive technique \cite{progressive}.
 Progressive alignment builds up the final alignment by combining pairwise alignments.
-A binary tree called a guide tree with sequences as leafs decides an order of pairwise alignments.
-The final alignment is built by following that tree from leafs to root.
+A binary tree called a guide tree with sequences as leaves decide an order of pairwise alignments.
+The final alignment is built by following that tree from leaves to root.
 Such tree can be composed by finding most similar pairs among all possible pairwise alignments resulting into
 a quadratic number of alignments.
 The problematic part of this approach is aligning two alignments which can be done in many various ways \cite{baum}.

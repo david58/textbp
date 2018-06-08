@@ -2,8 +2,35 @@
 \addcontentsline{toc}{chapter}{Introduction} % rucne pridanie do obsahu
 \markboth{Introduction}{Introduction} % vyriesenie hlaviciek
 
-DNA sequencing is a great task modern science. Ten years ago, it took several months and milions of dollars to sequence whole human genome. With modern technologies can do so in days at cost of thousands of dollars.
-These technologies are very precise, but the device is still very big and expensive.
-In 20xx, scientists at Oxford Nanopore developed new portable device that can sequence DNA and costs only several thousands. This device allows us to sequence genomes at International space station or in muontains on demand. MinION has however several issues. Main problem is precision of sequencing. This device measures current flowing through nanopore with DNA molecule inside. Process of translating this data to DNA sequence is called basecalling and introduces a lot of errors due to disruptions in measured values. Our goal is to get away of these disruptions by taking multiple reads of same DNA sequence and producing a single signal with less disruptions and higher quality. To do this we adapted approaches known from multiple alignment of DNA sequencing along with dynamic time warping  used to align signals.
-In the first chapter we introduce biological motivation and aspects of MinION device. In second chapter we described known algorithms for sequence alignment, multiple sequence alignment and alignment of signals.
-In the third chapter, we describe our approaches to combine multiple sequence alignment with alignment of signals and reconstruction of signal from this alignment
+DNA sequencing is a great challenge of modern science. 
+Ten years ago, it took several months and millions of dollars to sequence whole human genome. 
+Modern technologies can do so in days at cost of thousands of dollars.
+These technologies are very precise, but the device is still very 
+big and expensive.
+
+
+In 2012, scientists at Oxford Nanopore Technologies developed the new portable device called MinION
+that can sequence DNA and costs only several thousands. 
+This device allows us to sequence genomes at International space station or in extreme conditions on demand. 
+MinION has, however, several issues. The main problem is precision of sequencing. This device measures a current flowing through nanopore with DNA molecule inside. The process of translating this data into DNA sequence is called basecalling and introduces a 
+lot of errors due to disruptions in measured values. 
+
+Our goal is 
+to get away from these disruptions by taking multiple reads of same 
+DNA sequence and producing a single signal with fewer disruptions 
+and higher quality. To do this we adapted approaches known from 
+multiple alignment of DNA sequences along with dynamic time warping used to align signals.
+
+In the first chapter, we introduce biological motivation and aspects 
+of a MinION device along with standard data processing procedure for this data.
+
+In the second chapter, we described known algorithms 
+for sequence alignment, multiple sequence alignment, and alignment of signals.
+
+In the third chapter, we describe our approaches to combine multiple 
+sequence alignment with the alignment of signals and reconstruction of 
+a signal from this alignment.
+
+The fourth chapter shows visualizations we created to analyze the outcome of our approaches.
+
+In the final chapter, we describe testing data and testing procedure to evaluate the quality of our approaches.

@@ -2,4 +2,18 @@
 \addcontentsline{toc}{chapter}{Conclusion} % rucne pridanie do obsahu
 \markboth{Conclusion}{Conclusion} % vyriesenie hlaviciek
 
-Some conclusion.
+The most common approach to the processing of MinION data is to basecall and align to reference.
+The process of basealling is slow and introduces multiple errors. Our goal
+was to develop methods of multiple signal alignment as a way to produce a better signal that will
+result in the better outcome of basecalling.
+
+To align two signals we adapted and modified dynamic time warping algorithm known from speech recognition.
+A special challenge was to adapt multiple sequence alignment techniques and modify them for use with signals and dynamic time warping.
+
+We developed two ways of signal reconstruction from alignment produced by dynamic time warping. First one (\textit{alignment to sequence}) was to take one sequence as leading and in each point of this sequence calculate an average of all points aligned to it. This
+approach does not change the overall structure of signal but smoothes the signal. 
+The second approach (\textit{complete alignment}) was to concatenate average of each pair of points produced by alignment. This approach results in a slightly longer signal that contains more information but does not terminate outlying values. It is practically unusable for multiple alignment as it results in longer signal after each alignment and basecaller does not understand such signal.
+
+According to our tests, best results are achieved by combining \textit{aligning to sequence} with final signal reconstruction by taking \textit{average with length adjustment}. This approach resulted in a better signal in $27\%$ of test cases.
+
+The next step of MinION signals alignment would be to extend our methods for local alignment and produce one signal covering whole DNA sequence out of all squiggles. This could save time spent for basecalling all squiggles and also might result into more precise DNA sequence.

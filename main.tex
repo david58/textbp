@@ -109,6 +109,10 @@ Supervisor: & \mfskolitel \\
 
 \newpage 
 \thispagestyle{empty}
+\hspace{-2cm}\includegraphics[width=1.1\textwidth]{images/zadanie-en}
+
+\newpage 
+\thispagestyle{empty}
 \hspace{-2cm}\includegraphics[width=1.1\textwidth]{images/zadanie}
 
 % --- Koniec zadania
@@ -124,7 +128,7 @@ Supervisor: & \mfskolitel \\
 
 \vfill
 {\bf Acknowledgement:} I would like to thank Tomáš Vinař for his guidance, patience
-and consultations. I would also like to thank Jakub Havelka for providing preprocessed data.
+and consultations. I would also like to thank Jakub Havelka for providing preprocessed data for testing.
 
 % --- Koniec poďakovania
 
@@ -134,7 +138,8 @@ and consultations. I would also like to thank Jakub Havelka for providing prepro
 \newpage 
 \section*{Abstrakt}
 
-Výsledkom nanopórového sekvenovania sú postupnosti signálov vytvorené na základe referenčnej DNA. V týchto signáloch je vysoká variabilita a každá pozícia je typicky prečítaná viackrát. Cieľom práce je vytvoriť metódy pre praktické viacnásobné zarovnanie takýchto signálov a ich vizualizácia v kontexte referenčnej DNA.
+Výsledkom nanopórového sekvenovania sú postupnosti signálov vytvorené na základe referenčnej DNA. V týchto signáloch je vysoká variabilita a každá pozícia je typicky prečítaná viackrát. Štandardný postup pri analýze týchto dát je preložiť každý prečítaný signál na DNA sekvenciu. Tieto sekvencie sú vzájomne zarovnávné pre vyhladenie chýb vzniknutých pri preklade a vytvorenie výslednej sekvencie. Náš prístup je opačný. Najprv zarovnáme signály a vytvoríme z nich jeden ktorý bude preložený na DNA sekvenciu. V práci analyzujeme viaceré možnosti pre 
+viacnásobné zarovnanie signálov s cieľom vytvoriť jeden signál ktorý vyprodukuje menej chýb pri preklade.
 
 \paragraph*{Kľúčové slová:} nanopórové sekvenovanie, dynamic time warping, viacnásobné zarovnávanie
 % --- Koniec Abstrakt - Slovensky
@@ -146,10 +151,10 @@ Výsledkom nanopórového sekvenovania sú postupnosti signálov vytvorené na z
 \newpage 
 \section*{Abstract}
 
-Nanopore sequencing produces signals based on the underlying reference DNA. However, there is a large variability in these signals and at the same time, each position is typically read several times. The goal of the thesis is to develop practical multiple alignment methods for nanopore sequencing signals in order to align them to the reference DNA and to visualize the results. 
+Nanopore sequencing produces signals based on the underlying reference DNA. However, there is a large variability in these signals and at the same time, each position is typically read several times. The standard approach to analyze these data is to translate each signal read into the DNA sequence. These sequences are aligned to each other to fix mistakes introduced in process of translation and to produce consensus sequence. Our approach is different. At first we align signals and produce one signal and then we translate it to the DNA sequence. We analyze multiple approaches 
+to multiple signal alignment with the goal of producing one signal that will result in fewer translation mistakes.
 
-
-\paragraph*{Keywords:} nanopore sequencing, dynamic time warping, multiple alignmen
+\paragraph*{Keywords:} nanopore sequencing, dynamic time warping, multiple alignment
 
 % --- Koniec Abstrakt - Anglicky
 
@@ -214,7 +219,7 @@ Nanopore sequencing produces signals based on the underlying reference DNA. Howe
 % -------------------
 
 
-\newpage	
+\newpage    
 
 \backmatter
 
